@@ -1,0 +1,1 @@
+This is the public/js directory.
