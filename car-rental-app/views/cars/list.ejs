@@ -1,0 +1,35 @@
+<% layout('layouts/main_layout') -%>
+
+<h1>Our Fleet of Available Cars</h1>
+
+<form action="/cars" method="GET" style="margin-bottom: 20px;">
+    <input type="text" name="search" placeholder="Search by make or model" value="<%= typeof queryParams !== 'undefined' && queryParams.search ? queryParams.search : '' %>">
+    <input type="number" name="minPrice" placeholder="Min Price" style="width: 100px;" value="<%= typeof queryParams !== 'undefined' && queryParams.minPrice ? queryParams.minPrice : '' %>">
+    <input type="number" name="maxPrice" placeholder="Max Price" style="width: 100px;" value="<%= typeof queryParams !== 'undefined' && queryParams.maxPrice ? queryParams.maxPrice : '' %>">
+    <!-- Add more filters as needed, e.g., features, year -->
+    <button type="submit">Search/Filter</button>
+    <a href="/cars">Clear Filters</a>
+</form>
+
+<% if (error_msg && error_msg.length > 0) { %>
+    <p style="color: red;"><%= error_msg %></p>
+<% } %>
+
+<% if (cars && cars.length > 0) { %>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        <% cars.forEach(car => { %>
+            <div style="border: 1px solid #ccc; padding: 10px; width: 250px;">
+                <% if (car.imageURL) { %>
+                    <img src="<%= car.imageURL %>" alt="<%= car.make %> <%= car.model %>" style="width: 100%; height: 150px; object-fit: cover;">
+                <% } else { %>
+                    <div style="width: 100%; height: 150px; background: #eee; display:flex; align-items:center; justify-content:center;">No Image</div>
+                <% } %>
+                <h2><%= car.make %> <%= car.model %> (<%= car.year %>)</h2>
+                <p>Price per day: $<%= car.pricePerDay.toFixed(2) %></p>
+                <a href="/cars/<%= car._id %>">View Details</a>
+            </div>
+        <% }) %>
+    </div>
+<% } else { %>
+    <p>No cars currently available matching your criteria. Please check back later or adjust your filters!</p>
+<% } %>

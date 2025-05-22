@@ -1,0 +1,54 @@
+<%# Remove layout specific tags if layout is handled by express-ejs-layouts via controller %>
+
+<h1>Car Management</h1>
+<a href="/admin/cars/add">Add New Car</a>
+
+<% if (locals.success_msg && success_msg.length > 0) { %>
+    <p style="color: green;"><%= success_msg %></p>
+<% } %>
+<% if (locals.error_msg && error_msg.length > 0) { %>
+    <p style="color: red;"><%= error_msg %></p>
+<% } %>
+
+<% if (cars && cars.length > 0) { %>
+<table>
+    <thead>
+        <tr>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Price/Day</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% cars.forEach(car => { %>
+        <tr>
+            <td><%= car.make %></td>
+            <td><%= car.model %></td>
+            <td><%= car.year %></td>
+            <td><%= car.pricePerDay %></td>
+            <td><%= car.status %></td>
+            <td>
+                <% if (car.imageURL) { %>
+                    <img src="<%= car.imageURL %>" alt="<%= car.make %> <%= car.model %>" width="100">
+                <% } else { %>
+                    No Image
+                <% } %>
+            </td>
+            <td>
+                <a href="/admin/cars/edit/<%= car._id %>">Edit</a>
+                <form action="/admin/cars/delete/<%= car._id %>?_method=DELETE" method="POST" style="display:inline;">
+                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        <% }) %>
+    </tbody>
+</table>
+<% } else { %>
+<p>No cars found.</p>
+<% } %>

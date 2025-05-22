@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+    <h1>Oops! Something went wrong.</h1>
+    <p>Status: <%= error.status %></p>
+    <p>Message: <%= error.message %></p>
+    <% if (error.stack) { %>
+        <pre><%= error.stack %></pre>
+    <% } %>
+    <a href="/">Go Home</a>
+</body>
+</html>

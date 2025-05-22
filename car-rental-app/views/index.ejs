@@ -1,0 +1,11 @@
+<% layout('layouts/main_layout') -%>
+<h1>Welcome to Your Premier Car Rental Service!</h1>
+<p>Find the perfect car for your next adventure.</p>
+<p><a href="/cars">Browse Our Available Cars</a></p>
+
+<% if (!currentUser) { %>
+    <p><a href="/auth/login">Login</a> or <a href="/auth/register">Register</a> to manage bookings.</p>
+<% } else { %>
+    <p>Welcome back, <%= currentUser.username %>!</p>
+    <!-- Potentially link to user dashboard if one exists later -->
+<% } %>

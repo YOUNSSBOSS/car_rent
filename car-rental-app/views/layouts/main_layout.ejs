@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Car Rental App' %></title>
+    <!-- Link to global CSS, etc. -->
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a> |
+            <% if (currentUser) { %>
+                <a href="/user/dashboard">My Dashboard (Placeholder)</a> |
+                <a href="/auth/logout">Logout (<%= currentUser.username %>)</a>
+                <% if (userRole === 'admin') { %>
+                    | <a href="/admin/cars">Admin Cars</a>
+                <% } %>
+            <% } else { %>
+                <a href="/auth/login">Login</a> |
+                <a href="/auth/register">Register</a>
+            <% } %>
+        </nav>
+    </header>
+    <main>
+        <!-- Flash Messages -->
+        <% if (locals.success_msg && success_msg.length > 0) { %>
+            <p style="color: green;"><%= success_msg %></p>
+        <% } %>
+        <% if (locals.error_msg && error_msg.length > 0) { %>
+            <p style="color: red;"><%= error_msg %></p>
+        <% } %>
+
+        <%- body %>
+    </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Car Rental App</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Admin Area' %></title>
+    <!-- Link to global CSS / Admin specific CSS -->
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- Basic Admin Navigation -->
+            <a href="/admin/dashboard">Dashboard (Placeholder)</a> |
+            <a href="/admin/cars">Manage Cars</a> |
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <%- body %>
+    </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Car Rental Admin</p>
+    </footer>
+</body>
+</html>

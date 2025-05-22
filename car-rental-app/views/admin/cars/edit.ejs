@@ -1,0 +1,60 @@
+<% layout('layouts/admin_layout') -%>
+
+<h1>Edit Car: <%= car.make %> <%= car.model %></h1>
+
+<% if (locals.success_msg && success_msg.length > 0) { %>
+    <p style="color: green;"><%= success_msg %></p>
+<% } %>
+<% if (locals.error_msg && error_msg.length > 0) { %>
+    <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 10px;">
+        <strong>Please correct the following errors:</strong><br>
+        <%- error_msg %> <% /* Use <%- to render HTML from flash messages if they contain <br> */ %>
+    </div>
+<% } %>
+
+<form action="/admin/cars/edit/<%= car._id %>" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div>
+        <label for="make">Make:</label>
+        <input type="text" id="make" name="make" value="<%= locals.car && typeof car.make !== 'undefined' ? car.make : '' %>" required>
+    </div>
+    <div>
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" value="<%= locals.car && typeof car.model !== 'undefined' ? car.model : '' %>" required>
+    </div>
+    <div>
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" value="<%= locals.car && typeof car.year !== 'undefined' ? car.year : '' %>" required>
+    </div>
+    <div>
+        <label for="pricePerDay">Price Per Day:</label>
+        <input type="number" id="pricePerDay" name="pricePerDay" value="<%= locals.car && typeof car.pricePerDay !== 'undefined' ? car.pricePerDay : '' %>" step="0.01" required>
+    </div>
+    <div>
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="available" <%= (locals.car && car.status === 'available') ? 'selected' : '' %>>Available</option>
+            <option value="booked" <%= (locals.car && car.status === 'booked') ? 'selected' : '' %>>Booked</option>
+            <option value="maintenance" <%= (locals.car && car.status === 'maintenance') ? 'selected' : '' %>>Maintenance</option>
+        </select>
+    </div>
+    <div>
+        <label for="features">Features (comma-separated):</label>
+        <input type="text" id="features" name="features" value="<%= locals.featuresString || '' %>">
+    </div>
+    <div>
+        <label>Current Image:</label>
+        <% if (locals.car && car.imageURL) { %>
+            <img src="<%= car.imageURL %>" alt="<%= car.make %> <%= car.model %>" width="150">
+        <% } else { %>
+            <p>No image uploaded.</p>
+        <% } %>
+    </div>
+    <div>
+        <label for="carImage">Upload New Image (optional):</label>
+        <input type="file" id="carImage" name="carImage">
+        <small>If you upload a new image, it will replace the current one.</small>
+    </div>
+    <button type="submit">Update Car</button>
+</form>
+<a href="/admin/cars">Back to Car List</a>

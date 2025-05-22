@@ -1,0 +1,36 @@
+<% layout('layouts/main_layout') -%>
+
+<h1><%= car.make %> <%= car.model %></h1>
+
+<% if (error_msg && error_msg.length > 0) { %>
+    <p style="color: red;"><%= error_msg %></p>
+<% } %>
+
+<div>
+    <% if (car.imageURL) { %>
+        <img src="<%= car.imageURL %>" alt="<%= car.make %> <%= car.model %>" style="max-width: 400px;">
+    <% } else { %>
+        <p>No Image Available</p>
+    <% } %>
+    <p><strong>Year:</strong> <%= car.year %></p>
+    <p><strong>Price per day:</strong> $<%= car.pricePerDay %></p>
+    <p><strong>Status:</strong> <%= car.status %></p>
+    <% if (car.features && car.features.length > 0) { %>
+        <p><strong>Features:</strong></p>
+        <ul>
+            <% car.features.forEach(feature => { %>
+                <li><%= feature %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+    
+    <!-- Booking button/link - functionality in Phase 5 -->
+    <% if (currentUser) { %> <!-- Only show if user is logged in -->
+        <a href="/bookings/book/<%= car._id %>">Book Now (Placeholder)</a>
+    <% } else { %>
+        <p><a href="/auth/login">Log in</a> to book this car.</p>
+    <% } %>
+
+    <br>
+    <a href="/cars">Back to Car List</a>
+</div>
