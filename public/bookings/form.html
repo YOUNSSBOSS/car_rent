@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Car - Car Rental App</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a> | <a href="/cars/index.html">Cars</a>
+            <span id="auth-links-bookingform"></span> <!-- Managed by main-app.js -->
+        </nav>
+    </header>
+    <main>
+        <h1>Book a Car</h1>
+        <div id="message-area-booking-form"></div>
+        <div id="car-details-summary" style="margin-bottom:20px; padding:10px; border:1px solid #eee;">
+            <!-- Car details loaded by JS -->
+            <h2>Car for Booking</h2>
+            <p><strong>Make:</strong> <span id="car-make"></span></p>
+            <p><strong>Model:</strong> <span id="car-model"></span></p>
+            <p><strong>Year:</strong> <span id="car-year-summary"></span></p>
+            <p><strong>Price per Day:</strong> $<span id="car-price-summary"></span></p>
+        </div>
+        <form id="booking-form">
+            <input type="hidden" id="carId" name="carId">
+            <div>
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate" required>
+            </div>
+            <div>
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate" required>
+            </div>
+            <!-- Total price will be calculated and confirmed or shown after API response -->
+            <button type="submit">Request Booking</button>
+        </form>
+    </main>
+    <script src="/js/booking-user.js"></script>
+    <script src="/js/main-app.js"></script> 
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="form-title">Car Form</title> <!-- Title will be set by JS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin-style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a> | 
+            <a href="/admin/cars/index.html">Back to Car List</a> |
+            <span id="user-info-admin-form"></span>
+        </nav>
+    </header>
+    <main>
+        <h1 id="form-heading">Car Form</h1> <!-- Heading will be set by JS -->
+        <div id="message-area-admin-form"></div>
+        <form id="car-form" enctype="multipart/form-data">
+            <div>
+                <label for="make">Make:</label>
+                <input type="text" id="make" name="make" required>
+            </div>
+            <div>
+                <label for="model">Model:</label>
+                <input type="text" id="model" name="model" required>
+            </div>
+            <div>
+                <label for="year">Year:</label>
+                <input type="number" id="year" name="year" required>
+            </div>
+            <div>
+                <label for="pricePerDay">Price Per Day:</label>
+                <input type="number" id="pricePerDay" name="pricePerDay" step="0.01" required>
+            </div>
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="available">Available</option>
+                    <option value="booked">Booked</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
+            <div>
+                <label for="features">Features (comma-separated):</label>
+                <input type="text" id="features" name="features">
+            </div>
+            <div>
+                <label>Current Image:</label>
+                <img id="current-image" src="#" alt="Current car image" style="max-width: 200px; display: none;">
+                <p id="no-image-text" style="display: none;">No image currently uploaded.</p>
+            </div>
+            <div>
+                <label for="carImage">Car Image:</label>
+                <input type="file" id="carImage" name="carImage">
+                <small>Upload new image to change or add one.</small>
+            </div>
+            <button type="submit" id="submit-button">Submit</button>
+        </form>
+    </main>
+    <script src="/js/admin-cars.js"></script>
+</body>
+</html>

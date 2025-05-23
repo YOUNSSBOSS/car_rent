@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Cars</title>
+    <link rel="stylesheet" href="/css/style.css"> <!-- Shared or admin-specific CSS -->
+    <link rel="stylesheet" href="/css/admin-style.css"> <!-- Admin specific CSS -->
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a> | 
+            <a href="/admin/dashboard.html">Admin Dashboard (Placeholder)</a> |
+            <span id="user-info-admin"></span> <!-- Managed by a shared admin JS or main-app.js -->
+        </nav>
+    </header>
+    <main>
+        <h1>Manage Cars</h1>
+        <a href="/admin/cars/form.html" class="button">Add New Car</a>
+        <div id="message-area-admin-cars"></div>
+        <table id="cars-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Year</th>
+                    <th>Price/Day</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Car rows will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </main>
+    <script src="/js/admin-cars.js"></script>
+    <!-- Include main-app.js or a specific admin app script for common things like nav auth state -->
+</body>
+</html>

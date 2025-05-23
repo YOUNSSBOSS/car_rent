@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Bookings</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin-style.css"> <!-- Shared admin styles -->
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a> | 
+            <a href="/admin/dashboard.html">Admin Dashboard</a> |
+            <a href="/admin/cars/index.html">Manage Cars</a> |
+            <span id="user-info-admin-bookings"></span> <!-- Managed by main-app.js or similar -->
+        </nav>
+    </header>
+    <main>
+        <h1>Manage All Bookings</h1>
+        <div id="message-area-admin-bookings"></div>
+        
+        <!-- Filtering Controls -->
+        <form id="filter-bookings-form" style="margin-bottom: 20px;">
+            <input type="text" id="filter-userId" name="userId" placeholder="User ID">
+            <input type="text" id="filter-carId" name="carId" placeholder="Car ID">
+            <select id="filter-status" name="status">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="declined">Declined</option>
+                <option value="completed">Completed</option>
+            </select>
+            <button type="submit">Filter</button>
+            <button type="button" id="clear-booking-filters">Clear Filters</button>
+        </form>
+
+        <table id="bookings-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>User</th>
+                    <th>Car</th>
+                    <th>Dates</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Booking rows will be populated by JavaScript -->
+            </tbody>
+        </table>
+        <div id="pagination-controls-admin-bookings" style="margin-top: 20px; text-align: center;"></div>
+    </main>
+    <script src="/js/admin-booking.js"></script>
+    <script src="/js/main-app.js"></script> <!-- For shared nav elements -->
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Cars - Car Rental App</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <span id="auth-links-cars"></span> <!-- For Login/Register or User Info -->
+        </nav>
+    </header>
+    <main>
+        <h1>Our Fleet of Available Cars</h1>
+        <form id="filter-search-form" style="margin-bottom: 20px;">
+            <input type="text" name="search" id="search-query" placeholder="Search by make or model">
+            <input type="number" name="minPrice" id="min-price" placeholder="Min Price" style="width: 100px;">
+            <input type="number" name="maxPrice" id="max-price" placeholder="Max Price" style="width: 100px;">
+            <button type="submit">Search/Filter</button>
+            <button type="button" id="clear-filters">Clear Filters</button>
+        </form>
+        <div id="message-area-cars"></div>
+        <div id="cars-list-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+            <!-- Cars will be populated here by JavaScript -->
+        </div>
+        <div id="pagination-controls" style="margin-top: 20px; text-align: center;">
+            <!-- Pagination controls will be populated here -->
+        </div>
+    </main>
+    <footer><p>&copy; 2023 Car Rental App</p></footer>
+    <script src="/js/public-cars.js"></script>
+    <!-- Include main-app.js or a script to handle shared nav elements like auth status -->
+    <script src="/js/main-app.js"></script> 
+</body>
+</html>

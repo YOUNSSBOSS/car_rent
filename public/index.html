@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental App</title>
+    <!-- Link to global CSS -->
+    <link rel="stylesheet" href="/css/style.css"> <!-- Assuming a global style.css -->
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <span id="auth-links">
+                <!-- Populated by JS: e.g., <a href="/auth/login.html">Login</a> | <a href="/auth/register.html">Register</a> -->
+            </span>
+            <span id="user-info">
+                <!-- Populated by JS: e.g., Welcome, <span id="username-display"></span>! <button id="logout-button">Logout</button> -->
+            </span>
+        </nav>
+    </header>
+    <main>
+        <h1>Welcome to the Car Rental App!</h1>
+        <p>Your one-stop solution for renting the best cars.</p>
+        <p><a href="/cars/index.html">Browse Cars</a></p> <!-- Assuming cars/index.html will be created for car listings -->
+        <div id="messages"></div> <!-- For global messages -->
+    </main>
+    <footer>
+        <p>&copy; 2023 Car Rental App</p>
+    </footer>
+    <script src="/js/main-app.js"></script> <!-- Main script to handle auth state, nav updates -->
+</body>
+</html>

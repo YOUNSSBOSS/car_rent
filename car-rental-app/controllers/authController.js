@@ -1,109 +1,143 @@
-const User = require('../models/User'); // Assuming User model is in ../models/User.js
+const User = require('../models/User');
+const { successResponse, errorResponse } = require('../utils/apiResponse'); // Import response helpers
+// const { validationResult } = require('express-validator'); // Not used in this controller directly, but in routes
 
-// Render registration form
-exports.renderRegisterForm = (req, res) => {
-  res.render('auth/register', { pageTitle: 'Register' });
-};
-
-// Handle user registration
-exports.registerUser = async (req, res) => {
+// Handle user registration API
+exports.registerUser = async (req, res, next) => {
+  // Basic validation (can be enhanced with express-validator in routes)
   const { username, email, password, confirmPassword } = req.body;
-
-  // Basic validation (more robust validation later)
   if (!username || !email || !password || !confirmPassword) {
-    req.flash('error_msg', 'Please fill in all fields.');
-    return res.redirect('/auth/register');
+    return errorResponse(res, 'Please fill in all fields.', 400);
   }
-
   if (password !== confirmPassword) {
-    req.flash('error_msg', 'Passwords do not match.');
-    return res.redirect('/auth/register');
+    return errorResponse(res, 'Passwords do not match.', 400);
   }
-
   if (password.length < 6) {
-    req.flash('error_msg', 'Password must be at least 6 characters.');
-    return res.redirect('/auth/register');
+    return errorResponse(res, 'Password must be at least 6 characters.', 400);
   }
 
   try {
     let user = await User.findOne({ email });
     if (user) {
-      req.flash('error_msg', 'User with that email already exists.');
-      return res.redirect('/auth/register');
+      return errorResponse(res, 'User with that email already exists.', 409); // 409 Conflict
     }
-    
     user = await User.findOne({ username });
     if (user) {
-      req.flash('error_msg', 'User with that username already exists.');
-      return res.redirect('/auth/register');
+      return errorResponse(res, 'User with that username already exists.', 409);
     }
 
     const newUser = new User({ username, email, password });
     await newUser.save();
 
-    // Store user info in session (excluding password)
-    req.session.user = { id: newUser._id, username: newUser.username };
-    req.session.role = newUser.role; // Store role
+    // Log the user in by creating a session
+    req.session.user = { id: newUser._id, username: newUser.username, email: newUser.email };
+    req.session.role = newUser.role;
 
-    req.flash('success_msg', 'You are now registered and logged in!');
-    res.redirect('/'); // Redirect to homepage or dashboard
+    // Prepare user data to send back (excluding password)
+    const userToReturn = { 
+        id: newUser._id, 
+        username: newUser.username, 
+        email: newUser.email, 
+        role: newUser.role 
+    };
+    return successResponse(res, 'User registered successfully.', { user: userToReturn }, 201);
+
   } catch (err) {
-    console.error(err);
-    req.flash('error_msg', 'Server error during registration.');
-    res.redirect('/auth/register');
+    return next(err); 
   }
 };
 
-// Render login form
-exports.renderLoginForm = (req, res) => {
-  res.render('auth/login', { pageTitle: 'Login' });
-};
-
-// Handle user login
-exports.loginUser = async (req, res) => {
+// Handle user login API
+exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
-
   if (!email || !password) {
-    req.flash('error_msg', 'Please provide email and password.');
-    return res.redirect('/auth/login');
+    return errorResponse(res, 'Please provide email and password.', 400);
   }
 
   try {
-    const user = await User.findOne({ email }).select('+password'); // Explicitly select password
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      req.flash('error_msg', 'Invalid credentials.');
-      return res.redirect('/auth/login');
+      return errorResponse(res, 'Invalid credentials.', 401); // 401 Unauthorized
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      req.flash('error_msg', 'Invalid credentials.');
-      return res.redirect('/auth/login');
+      return errorResponse(res, 'Invalid credentials.', 401);
     }
 
-    // Store user info in session
-    req.session.user = { id: user._id, username: user.username };
-    req.session.role = user.role; // Store role
+    // Establish session
+    req.session.user = { id: user._id, username: user.username, email: user.email };
+    req.session.role = user.role;
+    
+    const userToReturn = { 
+        id: user._id, 
+        username: user.username, 
+        email: user.email, 
+        role: user.role 
+    };
+    return successResponse(res, 'Login successful.', { user: userToReturn });
 
-    req.flash('success_msg', 'You are now logged in!');
-    res.redirect('/'); // Redirect to homepage or dashboard
   } catch (err) {
-    console.error(err);
-    req.flash('error_msg', 'Server error during login.');
-    res.redirect('/auth/login');
+    return next(err);
   }
 };
 
-// Handle user logout
-exports.logoutUser = (req, res) => {
+// Handle user logout API
+exports.logoutUser = (req, res, next) => {
   req.session.destroy(err => {
     if (err) {
       console.error("Session destruction error:", err);
-      req.flash('error_msg', 'Failed to logout.');
-      return res.redirect('/');
+      return next(err); 
     }
-    res.clearCookie('connect.sid'); // Optional: clear the session cookie
-    req.flash('success_msg', 'You have successfully logged out.');
-    res.redirect('/auth/login');
+    res.clearCookie('connect.sid'); 
+    return successResponse(res, 'Logout successful.');
   });
+};
+
+// Get current logged-in user API
+exports.getCurrentUser = (req, res) => {
+  if (req.session && req.session.user) {
+    return successResponse(res, 'Current user fetched.', { user: req.session.user });
+  } else {
+    return successResponse(res, 'No active session.', { user: null }); 
+  }
+};
+
+// Change password API
+exports.changePassword = async (req, res, next) => {
+    // Validation for fields (can also be done via express-validator in routes)
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+        return errorResponse(res, 'Please fill in all password fields.', 400);
+    }
+    if (newPassword !== confirmNewPassword) {
+        return errorResponse(res, 'New passwords do not match.', 400);
+    }
+    if (newPassword.length < 6) { // Consistent with registration
+        return errorResponse(res, 'New password must be at least 6 characters long.', 400);
+    }
+
+    try {
+        // Get user from session and fetch full user object to access password
+        const user = await User.findById(req.session.user.id).select('+password');
+        if (!user) {
+            // This case should ideally not happen if session is valid and user exists
+            return errorResponse(res, 'User not found. Please log in again.', 404);
+        }
+
+        // Verify current password
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            return errorResponse(res, 'Incorrect current password.', 401);
+        }
+
+        // Set and hash new password (Mongoose pre-save hook will hash it)
+        user.password = newPassword;
+        await user.save();
+
+        return successResponse(res, 'Password changed successfully.');
+
+    } catch (err) {
+        return next(err);
+    }
 };

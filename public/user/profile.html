@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Car Rental App</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a> | <a href="/cars/index.html">Cars</a> | <a href="/bookings/my-bookings.html">My Bookings</a>
+            <span id="auth-links-profile"></span> <!-- Managed by main-app.js -->
+        </nav>
+    </header>
+    <main>
+        <h1>User Profile</h1>
+        <div id="user-details-area">
+            <p><strong>Username:</strong> <span id="profile-username"></span></p>
+            <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        </div>
+
+        <h2>Change Password</h2>
+        <div id="message-area-changepw"></div>
+        <form id="change-password-form">
+            <div>
+                <label for="currentPassword">Current Password:</label>
+                <input type="password" id="currentPassword" name="currentPassword" required>
+            </div>
+            <div>
+                <label for="newPassword">New Password (min 6 chars):</label>
+                <input type="password" id="newPassword" name="newPassword" required minlength="6">
+            </div>
+            <div>
+                <label for="confirmNewPassword">Confirm New Password:</label>
+                <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
+            </div>
+            <button type="submit">Change Password</button>
+        </form>
+    </main>
+    <script src="/js/user-profile.js"></script>
+    <script src="/js/main-app.js"></script> 
+</body>
+</html>

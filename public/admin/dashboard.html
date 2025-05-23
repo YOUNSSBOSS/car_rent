@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Car Rental App</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin-style.css">
+    <style>
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;}
+        .stat-card { background: #f9f9f9; border: 1px solid #eee; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .stat-card h3 { margin-top: 0; }
+        .recent-bookings table { width: 100%; border-collapse: collapse; }
+        .recent-bookings th, .recent-bookings td { border: 1px solid #ddd; padding: 8px; text-align: left;}
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a> | 
+            <a href="/admin/cars/index.html">Manage Cars</a> | 
+            <a href="/admin/bookings/index.html">Manage Bookings</a> |
+            <span id="user-info-admin-dash"></span> <!-- Managed by main-app.js or similar -->
+        </nav>
+    </header>
+    <main>
+        <h1>Admin Dashboard</h1>
+        <div id="message-area-admin-dash"></div>
+
+        <div class="stats-grid" id="stats-container">
+            <!-- Stats will be populated here by JavaScript -->
+        </div>
+
+        <div class="recent-bookings">
+            <h2>Recent Bookings</h2>
+            <table id="recent-bookings-table">
+                <thead><tr><th>ID</th><th>User</th><th>Car</th><th>Status</th><th>Total Price</th></tr></thead>
+                <tbody><!-- Recent bookings rows --></tbody>
+            </table>
+        </div>
+    </main>
+    <script src="/js/admin-dashboard.js"></script>
+    <script src="/js/main-app.js"></script> 
+</body>
+</html>

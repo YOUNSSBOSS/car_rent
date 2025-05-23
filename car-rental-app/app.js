@@ -4,33 +4,31 @@ const path = require('path');
 const connectDB = require('./config/database');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const flash = require('connect-flash');
+// const flash = require('connect-flash'); // REMOVED
 const csrf = require('csurf');
-const expressLayouts = require('express-ejs-layouts');
+// const methodOverride = require('method-override'); // If it was added by worker
 
 // Require route files
-const authRoutes = require('./routes/authRoutes');
-const adminCarRoutes = require('./routes/admin/carRoutes');
-const carRoutes = require('./routes/carRoutes'); // New public car routes
+const authApiRoutes = require('./routes/authRoutes'); 
+const adminCarApiRoutes = require('./routes/admin/carRoutes'); 
+const publicCarApiRoutes = require('./routes/carRoutes');
+const bookingApiRoutes = require('./routes/bookingRoutes'); 
+const adminBookingApiRoutes = require('./routes/admin/bookingRoutes'); 
+const adminDashboardApiRoutes = require('./routes/admin/dashboardRoutes'); // New
 
-// Connect to MongoDB
 connectDB();
-
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// app.use(methodOverride('_method')); // If used
 
-// Static files
+// Static files (will serve HTML, CSS, JS from public)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// View engine setup
-app.use(expressLayouts);
-app.set('layout', './layouts/main_layout'); // Default layout
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
+// View engine setup - NO LONGER NEEDED
+// ... (EJS setup commented out)
 
 // Session Configuration
 app.use(session({
@@ -42,71 +40,91 @@ app.use(session({
     collectionName: 'sessions'
   }),
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24
+    maxAge: 1000 * 60 * 60 * 24, 
+    httpOnly: true, 
   }
 }));
-
-// Flash Messages
-app.use(flash());
 
 // CSRF Protection
 const csrfProtection = csrf();
 app.use(csrfProtection);
 
-// Global variables for views
+// Global variables for session state
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.user;
   res.locals.userRole = req.session.role;
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  if (typeof req.csrfToken === 'function') {
-      res.locals.csrfToken = req.csrfToken();
-  }
-  res.locals.layout = res.locals.layout || 'layouts/main_layout'; 
   next();
 });
 
-// Public Routes
-app.get('/', (req, res) => {
-  res.render('index', { pageTitle: 'Welcome' }); // New homepage
-});
-app.use('/cars', carRoutes); // Mount public car routes
-
-// Auth Routes
-app.use('/auth', authRoutes);
-
-// Admin Routes
-app.use('/admin/cars', adminCarRoutes);
+// API Routes
+app.use('/api/auth', authApiRoutes);
+app.use('/api/admin/cars', adminCarApiRoutes);
+app.use('/api/cars', publicCarApiRoutes); 
+app.use('/api/bookings', bookingApiRoutes); 
+app.use('/api/admin/bookings', adminBookingApiRoutes); 
+app.use('/api/admin/dashboard', adminDashboardApiRoutes); // Mount Admin Dashboard API routes
 
 
-// 404 Error Handler
-app.use((req, res, next) => {
-  res.status(404).render('partials/404', { layout: 'layouts/main_layout', pageTitle: 'Page Not Found' });
-});
-
-// General Error Handler
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  if (err.code === 'EBADCSRFTOKEN') {
-    req.flash('error_msg', 'Form tempered or session expired. Please try again.');
-    return res.redirect(req.path);
+// GET CSRF Token Endpoint
+app.get('/api/csrf-token', (req, res) => {
+  if (typeof req.csrfToken !== 'function') {
+    return res.status(500).json({ status: 'error', message: 'CSRF token function not available.'});
   }
+  res.json({ csrfToken: req.csrfToken() });
+});
 
-  console.error(err.stack);
-  res.status(err.status || 500);
-  res.render('partials/error', {
-    error: {
-        message: err.message,
-        status: err.status || 500,
-        stack: process.env.NODE_ENV === 'development' ? err.stack : {}
-    },
-    layout: 'layouts/main_layout',
-    pageTitle: 'Error'
+// Basic HTML serving for root (SPA shell or static homepage)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
+        if (err) {
+            res.status(500).send("Error serving index.html. Ensure it's in the public directory.");
+        }
+    });
+});
+
+
+// Error Handlers (API-centric)
+app.use((req, res, next) => {
+  res.status(404).json({ 
+    status: 'error',
+    message: 'Not Found - The requested API endpoint does not exist.' 
   });
 });
 
-const PORT = process.env.PORT || 3000;
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error('-------------------- ERROR START --------------------');
+  console.error(err.stack); 
+  console.error('-------------------- ERROR END ----------------------');
 
+  const statusCode = err.status || 500;
+  let errorMessage = 'Server Error'; 
+
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).json({
+      status: 'error',
+      message: 'Invalid CSRF token. Please refresh and try again or ensure your client is sending the correct token.'
+    });
+  }
+  
+  if (statusCode !== 500 || process.env.NODE_ENV === 'development') {
+      errorMessage = err.message || errorMessage;
+  }
+
+  const errorResponse = {
+    status: 'error',
+    message: errorMessage,
+  };
+
+  if (process.env.NODE_ENV === 'development') {
+    errorResponse.stack = err.stack; 
+  }
+
+  res.status(statusCode).json(errorResponse);
+});
+
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
